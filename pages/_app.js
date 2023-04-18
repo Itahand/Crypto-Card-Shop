@@ -13,12 +13,8 @@ function MyApp({ Component, pageProps }) {
       <div className="bg-white text-black bg-[url('/bg.png')] bg-cover bg-center min-h-screen">
         <RecoilRoot>
           <Head>
-            <title>flowview | Flow Account Viewer</title>
-            <meta
-              property="og:title"
-              content="flowview | Flow Account Viewer"
-              key="title"
-            />
+            <title>Crypto Card Shop</title>
+            <meta property="og:title" content="Crypto Card Shop" key="title" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
           <NavigationBar />
