@@ -26,13 +26,18 @@ export default function NavigationBar() {
   const [user, setUser] = useState({ loggedIn: null });
   useEffect(() => fcl.currentUser.subscribe(setUser), []);
 
-  // useEffect(() => {
-  //   const shouldDoConnectionJump = localStorage.getItem("shouldDoConnectionJump") || "YES"
-  //   if ((user && user.loggedIn && shouldDoConnectionJump) == "YES") {
-  //     localStorage.setItem("shouldDoConnectionJump", "NO")
-  //     router.push(`/account/${user.addr}`, undefined, { shallow: true })
-  //   }
-  // }, [user])
+  useEffect(() => {
+    const shouldDoConnectionJump =
+      localStorage.getItem("shouldDoConnectionJump") || "YES";
+    if ((user && user.loggedIn && shouldDoConnectionJump) == "YES") {
+      localStorage.setItem("shouldDoConnectionJump", "NO");
+      router.push(
+        `/account/${user.addr}/collection/MomentCollection`,
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [user]);
 
   useEffect(() => {
     window.addEventListener("message", async (d) => {
@@ -67,23 +72,17 @@ export default function NavigationBar() {
           bg-drizzle rounded-full px-3 py-2 leading-5"
           onClick={() => {
             if (user && user.loggedIn) {
-              router.push(`/account/${user.addr}`, undefined, {
-                shallow: true,
-              });
+              router.push(
+                `/account/${user.addr}/collection/MomentCollection`,
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
             }
           }}
         >
           {user && user.addr}
-        </button>
-
-        <button
-          type="button"
-          className="shrink-0 bg-drizzle rounded-full p-2"
-          onClick={() => {
-            router.push(`/bookmark`, undefined, { shallow: true });
-          }}
-        >
-          <StarIcon className="h-5 w-5 text-black" />
         </button>
 
         <button
@@ -119,22 +118,13 @@ export default function NavigationBar() {
     <div className="px-6 m-auto max-w-7xl min-w-[380px] relative gap-x-5 flex items-center justify-between bg-transparent h-44">
       <div className="flex items-center gap-x-1 sm:gap-x-2">
         <Link href="/">
-          <div className="w-[36px] sm:w-[50px] aspect-square relative">
-            <Image src="/logo.png" alt="" fill sizes="16vw" priority={true} />
-          </div>
-        </Link>
-
-        <Link href="/">
           <label className="cursor-pointer font-flow font-bold text-2xl sm:text-3xl">
-            flowview
+            Crypto Card Shop
           </label>
         </Link>
-        <label className="hidden sm:block px-1 text-center font-flow text-drizzle font-medium text-xs border border-1 border-drizzle">
-          {`${publicConfig.chainEnv.toUpperCase()}`}
-        </label>
-        <label className="block sm:hidden px-1 text-center font-flow text-drizzle font-medium text-xs border border-1 border-drizzle">
+        {/*         <label className="block sm:hidden px-1 text-center font-flow text-drizzle font-medium text-xs border border-1 border-drizzle">
           {`${publicConfig.chainEnv.toUpperCase().charAt(0)}`}
-        </label>
+        </label> */}
       </div>
 
       {user && user.loggedIn ? <AuthedState /> : <UnauthenticatedState />}
