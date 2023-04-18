@@ -206,7 +206,6 @@ export default function NFTDetailView(props) {
                     {trait.name}
                   </label>
                   <label className="text-center text-sm">{trait.value}</label>
-
                   {
                     // TODO: Score?
                     trait.rarity && trait.rarity.description ? (

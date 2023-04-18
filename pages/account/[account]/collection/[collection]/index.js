@@ -217,25 +217,6 @@ export default function CollectionDetail(props) {
     <div className="container mx-auto max-w-7xl min-w-[380px] px-2">
       <Layout>
         <div className="flex flex-col gap-y-3">
-          <button
-            className="mb-2 self-start"
-            onClick={() => {
-              router.push(
-                {
-                  pathname: "/account/[account]/collection",
-                  query: { account: account },
-                },
-                undefined,
-                { shallow: true, scroll: false }
-              );
-            }}
-          >
-            <div className="flex gap-x-2 text-drizzle items-center">
-              <ArrowLeftIcon className="h-5 w-5" />
-              <label className="cursor-pointer">Collections</label>
-            </div>
-          </button>
-
           {getBasicInfoView()}
 
           <div className="w-[calc(min(100vw,80rem)-160px)] sm:w-[calc(min(100vw,80rem)-192px)] overflow-auto">

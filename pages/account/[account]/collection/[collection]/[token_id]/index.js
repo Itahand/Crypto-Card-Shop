@@ -94,7 +94,7 @@ export default function NFT(props) {
           >
             <div className=" flex gap-x-2 text-drizzle items-center">
               <ArrowLeftIcon className="h-5 w-5" />
-              <label className="cursor-pointer">Collection Detail</label>
+              <label className="cursor-pointer">Collection List</label>
             </div>
           </button>
 
