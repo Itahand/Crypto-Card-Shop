@@ -1,9 +1,10 @@
-import { config } from "@onflow/fcl"
-import publicConfig from "../publicConfig"
-import {send as httpSend} from "@onflow/transport-http"
+import { config } from "@onflow/fcl";
+import publicConfig from "../publicConfig";
+import { send as httpSend } from "@onflow/transport-http";
 
 config({
-  "flow.network": publicConfig.chainEnv == "emulator" ? "local" : publicConfig.chainEnv,
+  "flow.network":
+    publicConfig.chainEnv == "emulator" ? "local" : publicConfig.chainEnv,
   "accessNode.api": publicConfig.accessNodeAPI,
   "discovery.wallet": publicConfig.walletDiscovery,
   "sdk.transport": httpSend,
@@ -17,4 +18,6 @@ config({
   "0xFungibleTokenSwitchboard": publicConfig.fungibleTokenSwitchboardAddress,
   "0xFlowbox": publicConfig.flowboxAddress,
   "0xFlowviewAccountBookmark": publicConfig.accountBookmarkAddress,
-})
+}).put("discovery.authn.include", [
+  "0xead892083b3e2c6c", // Dapper Wallet
+]);
