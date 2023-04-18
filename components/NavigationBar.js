@@ -21,7 +21,7 @@ export default function NavigationBar() {
   const [, setBasicNotificationContent] = useRecoilState(
     basicNotificationContentState
   );
-
+  //
   const router = useRouter();
   const [user, setUser] = useState({ loggedIn: null });
   useEffect(() => fcl.currentUser.subscribe(setUser), []);
