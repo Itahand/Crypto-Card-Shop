@@ -1,417 +1,441 @@
-import publicConfig from "../publicConfig"
-import * as fcl from "@onflow/fcl"
-import { outdatedPathsMainnet } from "./outdated_paths/mainnet"
-import { outdatedPathsTestnet } from "./outdated_paths/testnet"
+import publicConfig from "../publicConfig";
+import * as fcl from "@onflow/fcl";
+import { outdatedPathsMainnet } from "./outdated_paths/mainnet";
+import { outdatedPathsTestnet } from "./outdated_paths/testnet";
 
 const outdatedPaths = (network) => {
   if (network == "mainnet") {
-    return outdatedPathsMainnet
+    return outdatedPathsMainnet;
   }
-  return outdatedPathsTestnet
-}
+  return outdatedPathsTestnet;
+};
 
 // --- Utils ---
 
 const splitList = (list, chunkSize) => {
-  const groups = []
-  let currentGroup = []
+  const groups = [];
+  let currentGroup = [];
   for (let i = 0; i < list.length; i++) {
-      const collectionID = list[i]
-      if (currentGroup.length >= chunkSize) {
-        groups.push([...currentGroup])
-        currentGroup = []
-      }
-      currentGroup.push(collectionID)
+    const collectionID = list[i];
+    if (currentGroup.length >= chunkSize) {
+      groups.push([...currentGroup]);
+      currentGroup = [];
+    }
+    currentGroup.push(collectionID);
   }
-  groups.push([...currentGroup])
-  return groups
-}
+  groups.push([...currentGroup]);
+  return groups;
+};
 
 // --- Basic Info ---
 
 export const getAccountInfo = async (address) => {
-  const code = await (await fetch("/scripts/basic/get_account_info.cdc")).text()
+  const code = await (
+    await fetch("/scripts/basic/get_account_info.cdc")
+  ).text();
 
   const result = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address)
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
-  return result
-}
+  return result;
+};
 
 // --- Keys ---
 
 export const getKeys = async (address) => {
-  const accountInfo = await fcl.send([ fcl.getAccount(fcl.sansPrefix(address)) ])
-  return accountInfo.account.keys.sort((a, b) => a.keyIndex - b.keyIndex)
-}
+  const accountInfo = await fcl.send([fcl.getAccount(fcl.sansPrefix(address))]);
+  return accountInfo.account.keys.sort((a, b) => a.keyIndex - b.keyIndex);
+};
 
 // -- Contracts --
 
 export const getContractNames = async (address) => {
-  const code = await (await fetch("/scripts/contract/get_contract_names.cdc")).text()
-
+  const code = await (
+    await fetch("/scripts/contract/get_contract_names.cdc")
+  ).text();
 
   const names = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address)
-    ]
-  })
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
   const uniqueNames = [...new Set(names)];
 
-  return uniqueNames
-}
+  return uniqueNames;
+};
 
 // --- Domains ---
 
 export const getDefaultDomainsOfAddress = async (address) => {
-  const code = await (await fetch("/scripts/domain/get_default_domains_of_address.cdc")).text()
+  const code = await (
+    await fetch("/scripts/domain/get_default_domains_of_address.cdc")
+  ).text();
 
   const domains = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address)
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
-  return domains
-}
+  return domains;
+};
 
 export const getAddressOfDomain = async (domain) => {
-  const comps = domain.split(".")
-  const name = comps[0]
-  const root = comps[1]
+  const comps = domain.split(".");
+  const name = comps[0];
+  const root = comps[1];
 
-  const code = await (await fetch("/scripts/domain/get_address_of_domain.cdc")).text()
+  const code = await (
+    await fetch("/scripts/domain/get_address_of_domain.cdc")
+  ).text();
 
   const address = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(name, t.String),
-      arg(root, t.String),
-    ]
-  }) 
+    args: (arg, t) => [arg(name, t.String), arg(root, t.String)],
+  });
 
-  return address
-}
+  return address;
+};
 
 // --- Collections ---
 
 export const getNftMetadataViews = async (address, storagePathID, tokenID) => {
-  const code = await (await fetch("/scripts/collection/get_nft_metadata_views.cdc")).text()
-
+  const code = await (
+    await fetch("/scripts/collection/get_nft_metadata_views.cdc")
+  ).text();
+  console.log(address, storagePathID, tokenID);
   const metadata = await fcl.query({
     cadence: code,
     args: (arg, t) => [
       arg(address, t.Address),
       arg(storagePathID, t.String),
-      arg(tokenID, t.UInt64)
-    ]
-  }) 
+      arg(tokenID, t.UInt64),
+    ],
+  });
 
-  return metadata
-}
+  return metadata;
+};
 
 export const getNftViews = async (address, storagePathID, tokenIDs) => {
-  const ids = tokenIDs.map((id) => `${id}`)
-  const code = await (await fetch("/scripts/collection/get_nft_displays.cdc")).text()
+  const ids = tokenIDs.map((id) => `${id}`);
+  const code = await (
+    await fetch("/scripts/collection/get_nft_displays.cdc")
+  ).text();
 
   const displays = await fcl.query({
     cadence: code,
     args: (arg, t) => [
       arg(address, t.Address),
       arg(storagePathID, t.String),
-      arg(ids, t.Array(t.UInt64))
-    ]
-  }) 
+      arg(ids, t.Array(t.UInt64)),
+    ],
+  });
 
-  return displays  
-}
+  return displays;
+};
 
 export const bulkGetNftViews = async (address, collection, limit, offset) => {
-  const totalTokenIDs = collection.tokenIDs
-  const tokenIDs = totalTokenIDs.slice(offset, offset + limit)
+  const totalTokenIDs = collection.tokenIDs;
+  const tokenIDs = totalTokenIDs.slice(offset, offset + limit);
 
-  const groups = splitList(tokenIDs, 20) 
+  const groups = splitList(tokenIDs, 20);
   const promises = groups.map((group) => {
-    return getNftViews(address, collection.path.replace("/storage/", ""), group)
-  }) 
-  const displayGroups = await Promise.all(promises)
+    return getNftViews(
+      address,
+      collection.path.replace("/storage/", ""),
+      group
+    );
+  });
+  const displayGroups = await Promise.all(promises);
   const displays = displayGroups.reduce((acc, current) => {
-    return Object.assign(acc, current)
-  }, {}) 
+    return Object.assign(acc, current);
+  }, {});
 
-  return displays
-}
+  return displays;
+};
 
 // --- NFT Catalog ---
 
 export const bulkGetNftCatalog = async () => {
-  const collectionIdentifiers = await getCollectionIdentifiers()
-  const groups = splitList(collectionIdentifiers, 50)
+  const collectionIdentifiers = await getCollectionIdentifiers();
+  const groups = splitList(collectionIdentifiers, 50);
   const promises = groups.map((group) => {
-    return getNftCatalogByCollectionIDs(group)
-  })
+    return getNftCatalogByCollectionIDs(group);
+  });
 
-  const itemGroups = await Promise.all(promises)
+  const itemGroups = await Promise.all(promises);
   const items = itemGroups.reduce((acc, current) => {
-    return Object.assign(acc, current)
-  }, {}) 
-  return items 
-}
+    return Object.assign(acc, current);
+  }, {});
+  return items;
+};
 
 export const getNftCatalogByCollectionIDs = async (collectionIDs) => {
-  const code = await (await fetch("/scripts/collection/get_nft_catalog_by_collection_ids.cdc")).text() 
+  const code = await (
+    await fetch("/scripts/collection/get_nft_catalog_by_collection_ids.cdc")
+  ).text();
 
   const catalogs = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(collectionIDs, t.Array(t.String))
-    ]
-  }) 
+    args: (arg, t) => [arg(collectionIDs, t.Array(t.String))],
+  });
 
-  return catalogs  
-}
+  return catalogs;
+};
 
 const getCollectionIdentifiers = async () => {
-  const typeData = await getCatalogTypeData()
+  const typeData = await getCatalogTypeData();
 
-  const collectionData = Object.values(typeData)
-  const collectionIdentifiers = []
+  const collectionData = Object.values(typeData);
+  const collectionIdentifiers = [];
   for (let i = 0; i < collectionData.length; i++) {
-    const data = collectionData[i]
-    let collectionIDs = Object.keys(Object.assign({}, data))
+    const data = collectionData[i];
+    let collectionIDs = Object.keys(Object.assign({}, data));
     if (collectionIDs.length > 0) {
-      collectionIdentifiers.push(collectionIDs[0])
+      collectionIdentifiers.push(collectionIDs[0]);
     }
   }
-  return collectionIdentifiers
-}
+  return collectionIdentifiers;
+};
 
 const getCatalogTypeData = async () => {
-  const code = await (await fetch("/scripts/collection/get_catalog_type_data.cdc")).text()
+  const code = await (
+    await fetch("/scripts/collection/get_catalog_type_data.cdc")
+  ).text();
 
   const typeData = await fcl.query({
-    cadence: code
-  }) 
+    cadence: code,
+  });
 
-  return typeData 
-}
+  return typeData;
+};
 
 // --- Storage Items ---
 
 export const bulkGetStoredItems = async (address) => {
-  const paths = await getStoragePaths(address)
-  const groups = splitList(paths.map((p) => p.identifier), 30)
+  const paths = await getStoragePaths(address);
+  const groups = splitList(
+    paths.map((p) => p.identifier),
+    30
+  );
   const promises = groups.map((group) => {
-    return getStoredItems(address, group)
-  })
+    return getStoredItems(address, group);
+  });
 
-  const itemGroups = await Promise.all(promises)
+  const itemGroups = await Promise.all(promises);
   const items = itemGroups.reduce((acc, curr) => {
-    return acc.concat(curr)
-  }, [])
-  return items
-}
+    return acc.concat(curr);
+  }, []);
+  return items;
+};
 
 export const getStoredItems = async (address, paths) => {
-  const code = await (await fetch("/scripts/storage/get_stored_items.cdc")).text()
+  const code = await (
+    await fetch("/scripts/storage/get_stored_items.cdc")
+  ).text();
 
   const items = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address),
-      arg(paths, t.Array(t.String))
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address), arg(paths, t.Array(t.String))],
+  });
 
-  return items
-}
+  return items;
+};
 
 const getStoragePaths = async (address) => {
-  let code = await (await fetch("/scripts/storage/get_storage_paths.cdc")).text()
-  code = code.replace("__OUTDATED_PATHS__", outdatedPaths(publicConfig.chainEnv).storage)
+  let code = await (
+    await fetch("/scripts/storage/get_storage_paths.cdc")
+  ).text();
+  code = code.replace(
+    "__OUTDATED_PATHS__",
+    outdatedPaths(publicConfig.chainEnv).storage
+  );
 
   const paths = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address)
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
-  return paths
-}
+  return paths;
+};
 
 export const getStoredStruct = async (address, path) => {
-  const pathIdentifier = path.replace("/storage/", "")
+  const pathIdentifier = path.replace("/storage/", "");
 
-  const code = await (await fetch("/scripts/storage/get_stored_struct.cdc")).text()
+  const code = await (
+    await fetch("/scripts/storage/get_stored_struct.cdc")
+  ).text();
 
   const resource = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address),
-      arg(pathIdentifier, t.String),
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address), arg(pathIdentifier, t.String)],
+  });
 
-  return resource
-}
-
+  return resource;
+};
 
 export const getStoredResource = async (address, path) => {
-  const pathIdentifier = path.replace("/storage/", "")
+  const pathIdentifier = path.replace("/storage/", "");
 
-  const code = await (await fetch("/scripts/storage/get_stored_resource.cdc")).text()
+  const code = await (
+    await fetch("/scripts/storage/get_stored_resource.cdc")
+  ).text();
 
   const resource = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address),
-      arg(pathIdentifier, t.String),
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address), arg(pathIdentifier, t.String)],
+  });
 
-  return resource
-}
-
+  return resource;
+};
 
 // --- Public Items ---
 
 export const bulkGetPublicItems = async (address) => {
-  const paths = await getPublicPaths(address)
-  const groups = splitList(paths, 50)
+  const paths = await getPublicPaths(address);
+  const groups = splitList(paths, 50);
   const promises = groups.map((group) => {
-    return getPublicItems(address, group)
-  })
+    return getPublicItems(address, group);
+  });
 
-  const itemGroups = await Promise.all(promises)
+  const itemGroups = await Promise.all(promises);
   const items = itemGroups.reduce((acc, curr) => {
-    return acc.concat(curr)
-  }, [])
-  return items
-}
+    return acc.concat(curr);
+  }, []);
+  return items;
+};
 
 export const getPublicItems = async (address, paths) => {
   const pathMap = paths.reduce((acc, path) => {
-    const p = {key: `/${path.domain}/${path.identifier}`, value: true}
-    acc.push(p)
-    return acc
-  }, [])
+    const p = { key: `/${path.domain}/${path.identifier}`, value: true };
+    acc.push(p);
+    return acc;
+  }, []);
 
-  const code = await (await fetch("/scripts/storage/get_public_items.cdc")).text()
+  const code = await (
+    await fetch("/scripts/storage/get_public_items.cdc")
+  ).text();
 
   const items = await fcl.query({
     cadence: code,
     args: (arg, t) => [
-        arg(address, t.Address),
-        arg(pathMap, t.Dictionary({key: t.String, value: t.Bool}))
-      ]
-  }) 
+      arg(address, t.Address),
+      arg(pathMap, t.Dictionary({ key: t.String, value: t.Bool })),
+    ],
+  });
 
-  return items
-}
+  return items;
+};
 
 // A workaround method
 export const getPublicItem = async (address, paths) => {
   const pathMap = paths.reduce((acc, path) => {
-    const p = {key: `/${path.domain}/${path.identifier}`, value: true}
-    acc.push(p)
-    return acc
-  }, [])
+    const p = { key: `/${path.domain}/${path.identifier}`, value: true };
+    acc.push(p);
+    return acc;
+  }, []);
 
-  const code = await (await fetch("/scripts/storage/get_public_items.cdc")).text()
+  const code = await (
+    await fetch("/scripts/storage/get_public_items.cdc")
+  ).text();
 
   const items = await fcl.query({
     cadence: code,
     args: (arg, t) => [
-        arg(address, t.Address),
-        arg(pathMap, t.Dictionary({key: t.String, value: t.Bool}))
-      ]
-  }) 
+      arg(address, t.Address),
+      arg(pathMap, t.Dictionary({ key: t.String, value: t.Bool })),
+    ],
+  });
 
-  return items
-}
+  return items;
+};
 
 export const getBasicPublicItems = async (address) => {
-  let code = await (await fetch("/scripts/storage/get_basic_public_items.cdc")).text()
-  code = code.replace("__OUTDATED_PATHS__", outdatedPaths(publicConfig.chainEnv).public)
+  let code = await (
+    await fetch("/scripts/storage/get_basic_public_items.cdc")
+  ).text();
+  code = code.replace(
+    "__OUTDATED_PATHS__",
+    outdatedPaths(publicConfig.chainEnv).public
+  );
 
   const items = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-        arg(address, t.Address)
-      ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
-  return items
-}
+  return items;
+};
 
 export const getPublicPaths = async (address) => {
-  let code = await (await fetch("/scripts/storage/get_public_paths.cdc")).text()
-  code = code.replace("__OUTDATED_PATHS__", outdatedPaths(publicConfig.chainEnv).public)
+  let code = await (
+    await fetch("/scripts/storage/get_public_paths.cdc")
+  ).text();
+  code = code.replace(
+    "__OUTDATED_PATHS__",
+    outdatedPaths(publicConfig.chainEnv).public
+  );
 
   const paths = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address)
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
-  return paths
-}
+  return paths;
+};
 
 // --- Private Items ---
 
 export const bulkGetPrivateItems = async (address) => {
-  const paths = await getPrivatePaths(address)
-  const groups = splitList(paths, 50)
+  const paths = await getPrivatePaths(address);
+  const groups = splitList(paths, 50);
   const promises = groups.map((group) => {
-    return getPrivateItems(address, group)
-  })
+    return getPrivateItems(address, group);
+  });
 
-  const itemGroups = await Promise.all(promises)
+  const itemGroups = await Promise.all(promises);
   const items = itemGroups.reduce((acc, curr) => {
-    return acc.concat(curr)
-  }, [])
-  return items
-}
+    return acc.concat(curr);
+  }, []);
+  return items;
+};
 
 export const getPrivateItems = async (address, paths) => {
   const pathMap = paths.reduce((acc, path) => {
-    const p = {key: `/${path.domain}/${path.identifier}`, value: true}
-    acc.push(p)
-    return acc
-  }, [])
+    const p = { key: `/${path.domain}/${path.identifier}`, value: true };
+    acc.push(p);
+    return acc;
+  }, []);
 
-  const code = await (await fetch("/scripts/storage/get_private_items.cdc")).text()
+  const code = await (
+    await fetch("/scripts/storage/get_private_items.cdc")
+  ).text();
 
   const items = await fcl.query({
     cadence: code,
     args: (arg, t) => [
-        arg(address, t.Address),
-        arg(pathMap, t.Dictionary({key: t.String, value: t.Bool}))
-      ]
-  }) 
+      arg(address, t.Address),
+      arg(pathMap, t.Dictionary({ key: t.String, value: t.Bool })),
+    ],
+  });
 
-  return items
-}
+  return items;
+};
 
 export const getPrivatePaths = async (address) => {
-  let code = await (await fetch("/scripts/storage/get_private_paths.cdc")).text()
-  code = code.replace("__OUTDATED_PATHS__", outdatedPaths(publicConfig.chainEnv).private)
+  let code = await (
+    await fetch("/scripts/storage/get_private_paths.cdc")
+  ).text();
+  code = code.replace(
+    "__OUTDATED_PATHS__",
+    outdatedPaths(publicConfig.chainEnv).private
+  );
 
   const paths = await fcl.query({
     cadence: code,
-    args: (arg, t) => [
-      arg(address, t.Address)
-    ]
-  }) 
+    args: (arg, t) => [arg(address, t.Address)],
+  });
 
-  return paths
-}
+  return paths;
+};

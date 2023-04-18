@@ -1,55 +1,62 @@
-import { ArrowLeftIcon } from "@heroicons/react/outline"
-import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import Layout from "../../../../../../components/common/Layout"
-import NFTDetailView from "../../../../../../components/common/NFTDetailView"
-import Spinner from "../../../../../../components/common/Spinner"
-import { getNftMetadataViews } from "../../../../../../flow/scripts"
-import { isValidFlowAddress } from "../../../../../../lib/utils"
-import Custom404 from "../../../404"
+import { ArrowLeftIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Layout from "../../../../../../components/common/Layout";
+import NFTDetailView from "../../../../../../components/common/NFTDetailView";
+import Spinner from "../../../../../../components/common/Spinner";
+import { getNftMetadataViews } from "../../../../../../flow/scripts";
+import { isValidFlowAddress } from "../../../../../../lib/utils";
+import Custom404 from "../../../404";
 
 export default function NFT(props) {
-  const router = useRouter()
-  const { account: account, collection: collectionPath, token_id: tokenID } = router.query
+  const router = useRouter();
+  const {
+    account: account,
+    collection: collectionPath,
+    token_id: tokenID,
+  } = router.query;
 
-  const [metadataError, setMetadataError] = useState(null)
-  const [metadata, setMetadata] = useState(null)
+  const [metadataError, setMetadataError] = useState(null);
+  const [metadata, setMetadata] = useState(null);
 
   useEffect(() => {
     if (account && isValidFlowAddress(account)) {
-      getNftMetadataViews(account, collectionPath, tokenID).then((metadataViews) => {
-        setMetadata(metadataViews)
-      }).catch((e) => {
-        console.error(e)
-        if (typeof e == "object") {
-          if (e.errorMessage.includes("NFT does not exist")) {
-            setMetadataError("NFT not found")
-          } else if (e.errorMessage.includes("Get Collection Failed")) {
-            setMetadataError("No Collection Found")
+      getNftMetadataViews(account, collectionPath, tokenID)
+        .then((metadataViews) => {
+          console.log(metadataViews);
+          setMetadata(metadataViews);
+        })
+        .catch((e) => {
+          console.error(e);
+          if (typeof e == "object") {
+            if (e.errorMessage.includes("NFT does not exist")) {
+              setMetadataError("NFT not found");
+            } else if (e.errorMessage.includes("Get Collection Failed")) {
+              setMetadataError("No Collection Found");
+            } else {
+              setMetadataError("Get metadata failed");
+            }
           } else {
-            setMetadataError("Get metadata failed")
+            setMetadataError("Get metadata failed");
           }
-        } else {
-          setMetadataError("Get metadata failed")
-        }
-      })
+        });
     }
-  }, [account])
+  }, [account]);
 
   if (!account) {
-    return <div className="h-screen"></div>
+    return <div className="h-screen"></div>;
   }
 
   if (account && isValidFlowAddress(account)) {
     if (!collectionPath) {
-      return <Custom404 title={"Collection not found"} />
+      return <Custom404 title={"Collection not found"} />;
     }
   } else {
-    return <Custom404 title={"Account may not exist"} />
+    return <Custom404 title={"Account may not exist"} />;
   }
 
   if (metadataError) {
-    return <Custom404 title={metadataError} />
+    return <Custom404 title={metadataError} />;
   }
 
   const showToken = () => {
@@ -58,15 +65,15 @@ export default function NFT(props) {
         <div className="flex w-full mt-10 h-[200px] justify-center">
           <Spinner />
         </div>
-      )
+      );
     } else {
       return (
         <div className="p-1 w-[1076px] h-screen overflow-auto">
           <NFTDetailView metadata={metadata} />
         </div>
-      )
+      );
     }
-  }
+  };
 
   return (
     <div className="container mx-auto max-w-7xl min-w-[380px] px-2">
@@ -75,10 +82,14 @@ export default function NFT(props) {
           <button
             className="mb-2 self-start"
             onClick={() => {
-              router.push({
-                pathname: "/account/[account]/collection/[collection]",
-                query: { account: account, collection: collectionPath }
-              }, undefined, { shallow: true, scroll: false })
+              router.push(
+                {
+                  pathname: "/account/[account]/collection/[collection]",
+                  query: { account: account, collection: collectionPath },
+                },
+                undefined,
+                { shallow: true, scroll: false }
+              );
             }}
           >
             <div className=" flex gap-x-2 text-drizzle items-center">
@@ -88,10 +99,10 @@ export default function NFT(props) {
           </button>
 
           <div className="w-[calc(min(100vw,80rem)-160px)] sm:w-[calc(min(100vw,80rem)-192px)] overflow-auto">
-          {showToken()}
+            {showToken()}
           </div>
         </div>
       </Layout>
     </div>
-  )
+  );
 }

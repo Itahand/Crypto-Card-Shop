@@ -128,7 +128,6 @@ export default function CollectionDetail(props) {
         </div>
       );
     } else {
-      console.log(account, collection);
       return (
         <>
           {collection.tokenIDs.length > 0 ? (
