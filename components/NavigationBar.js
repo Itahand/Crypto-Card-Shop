@@ -13,7 +13,6 @@ import {
   basicNotificationContentState,
 } from "../lib/atoms.js";
 import { LogoutIcon, ShoppingCartIcon } from "@heroicons/react/outline";
-import { FiShoppingCart } from "react-icons";
 
 export default function NavigationBar() {
   const [, setShowBasicNotification] = useRecoilState(
