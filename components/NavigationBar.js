@@ -12,7 +12,8 @@ import {
   showBasicNotificationState,
   basicNotificationContentState,
 } from "../lib/atoms.js";
-import { LogoutIcon, StarIcon } from "@heroicons/react/outline";
+import { LogoutIcon, ShoppingCartIcon } from "@heroicons/react/outline";
+import { FiShoppingCart } from "react-icons";
 
 export default function NavigationBar() {
   const [, setShowBasicNotification] = useRecoilState(
@@ -107,7 +108,7 @@ export default function NavigationBar() {
           className="h-12 px-6 text-base rounded-2xl font-flow font-semibold shadow-sm text-black bg-drizzle hover:bg-drizzle-dark"
           onClick={fcl.logIn}
         >
-          <label className="hidden sm:block">Connect Walletz</label>
+          <label className="hidden sm:block">Connect Wallet</label>
           <label className="block sm:hidden">Connect</label>
         </button>
       </div>
@@ -122,12 +123,18 @@ export default function NavigationBar() {
             Crypto Card Shop
           </label>
         </Link>
-        {/*         <label className="block sm:hidden px-1 text-center font-flow text-drizzle font-medium text-xs border border-1 border-drizzle">
-          {`${publicConfig.chainEnv.toUpperCase().charAt(0)}`}
-        </label> */}
       </div>
-
       {user && user.loggedIn ? <AuthedState /> : <UnauthenticatedState />}
+      <div className="relative cursor-pointer w-10 h-10">
+        <Link href={"/cart"}>
+          <div>
+            <ShoppingCartIcon />
+            <span className="absolute -top-2 -right-2 text-[13px] bg-red-600 h-[18px] w-[18px] rounded-full grid place-items-center text-white">
+              0
+            </span>
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }
