@@ -65,7 +65,7 @@ export default function NFTView(props) {
     >
       <div className="flex justify-center w-full rounded-t-2xl aspect-square bg-drizzle-ultralight relative overflow-hidden">
         {
-          <video controls autoPlay loop>
+          <video autoPlay loop>
             {metadata ? (
               <source src={metadata.medias.items[1].file.url} />
             ) : (
