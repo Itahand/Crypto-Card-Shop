@@ -16,7 +16,6 @@ export default function NFTView(props) {
   const [metadataError, setMetadataError] = useState(null);
   const [metadata, setMetadata] = useState(null);
 
-  console.log(metadata);
   useEffect(() => {
     if (account && isValidFlowAddress(account)) {
       getNftMetadataViews(account, "MomentCollection", display.tokenID)

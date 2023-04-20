@@ -104,7 +104,6 @@ export const getNftMetadataViews = async (address, storagePathID, tokenID) => {
   const code = await (
     await fetch("/scripts/collection/get_nft_metadata_views.cdc")
   ).text();
-  console.log(address, storagePathID, tokenID);
   const metadata = await fcl.query({
     cadence: code,
     args: (arg, t) => [

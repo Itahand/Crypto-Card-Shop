@@ -22,12 +22,6 @@ export default function NFTListView(props) {
   const [metadataError, setMetadataError] = useState(null);
   const [metadata, setMetadata] = useState(null);
 
-  useEffect(() => {
-    if (account && isValidFlowAddress(account)) {
-      console.log(displays, "DOES IT EXIST?");
-    }
-  }, [displays]);
-
   const loadDisplays = () => {
     if (collection && account && isValidFlowAddress(account)) {
       const offset = (displays || []).length;

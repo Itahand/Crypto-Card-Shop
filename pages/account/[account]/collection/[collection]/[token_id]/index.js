@@ -23,7 +23,6 @@ export default function NFT(props) {
     if (account && isValidFlowAddress(account)) {
       getNftMetadataViews(account, collectionPath, tokenID)
         .then((metadataViews) => {
-          console.log(metadataViews);
           setMetadata(metadataViews);
         })
         .catch((e) => {
