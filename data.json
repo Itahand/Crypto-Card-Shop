@@ -1,0 +1,23 @@
+[
+  {
+      "id": 1,
+      "name": "Small",
+      "price": 129,
+      "image": "/infiniteObject.png",
+      "quantity": 1
+  },
+  {
+      "id": 2,
+      "name": "Large",
+      "price": 199,
+      "image": "/infiniteObject.png",
+      "quantity": 1
+  },
+  {
+      "id": 3,
+      "name": "Extra Large",
+      "price": 299,
+      "image": "/infiniteObject.png",
+      "quantity": 1
+  }
+]
