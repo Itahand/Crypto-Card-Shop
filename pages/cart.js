@@ -1,9 +1,9 @@
 import React from "react";
-import axios from "axios";
+//import axios from "axios";
 import { useRecoilState } from "recoil";
-import { cartState } from "../atoms/cartState";
+import { cartState } from "../lib/atoms";
 import CartList from "../components/CartList";
-import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
 
 const Cart = () => {
   const [cartItem, setCartItem] = useRecoilState(cartState);
@@ -14,7 +14,7 @@ const Cart = () => {
     return total;
   };
 
-  const createCheckoutSession = async () => {
+  /*   const createCheckoutSession = async () => {
     axios
       .post("api/checkout_sessions", { cartItem })
       .then((res) => {
@@ -22,12 +22,10 @@ const Cart = () => {
         window.location = res.data.sessionURL;
       })
       .catch((err) => console.log(err));
-  };
+  }; */
 
   return (
     <div>
-      <Navbar />
-
       <div className="container mx-auto">
         {cartItem.length <= 0 ? (
           <h1 className="text-center text-4xl mt-32">Your Cart Is Empty</h1>
@@ -42,7 +40,7 @@ const Cart = () => {
             </h2>
             <button
               className="text-right bg-red-600 text-white py-4 px-12 mt-4 block mx-auto hover:bg-red-800"
-              onClick={createCheckoutSession}
+              onClick={console.log("CALLED")}
             >
               Checkout
             </button>
