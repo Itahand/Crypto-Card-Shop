@@ -23,37 +23,6 @@ export default function NFTDetailView(props) {
 
   const { metadata } = props;
 
-  const getEditionsView = (metadata) => {
-    const editions = metadata.editions;
-    if (!editions || editions.infoList.length == 0) {
-      return null;
-    }
-    return (
-      <div className="flex flex-col gap-y-4 py-4 px-2">
-        <h1 className="shrink-0 text-xl sm:text-2xl font-bold text-gray-900">
-          {`Editions (${editions.infoList.length})`}
-        </h1>
-        <div className="flex flex-col gap-y-2">
-          {editions.infoList.map((edition, index) => {
-            return (
-              <div className="flex gap-x-1" key={`edition-${index}`}>
-                <label
-                  className={`font-bold text-xs px-2 py-1 leading-5 rounded-full bg-blue-100 text-blue-800`}
-                >
-                  {`${edition.name} `}
-                  <span className="text-blue-300">&nbsp;|&nbsp;</span>
-                  {edition.max
-                    ? ` #${edition.number} / ${edition.max}`
-                    : `#${edition.number}`}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
   const getDisplayView = (metadata) => {
     const display = metadata.display;
     if (!display) return null;
@@ -133,7 +102,6 @@ export default function NFTDetailView(props) {
       ) : (
         <>
           {getDisplayView(metadata)}
-          {getEditionsView(metadata)}
           <div className="min-w-min flex">
             {data.map((product) => (
               <Product product={product} key={product.id} />
