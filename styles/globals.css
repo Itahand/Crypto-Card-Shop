@@ -18,3 +18,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+#metaVideo {
+  width: 32rem;
+}

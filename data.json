@@ -1,22 +1,15 @@
 [
   {
       "id": 1,
-      "name": "Small",
+      "name": "Black",
       "price": 129,
       "image": "/infiniteObject.png",
       "quantity": 1
   },
   {
       "id": 2,
-      "name": "Large",
-      "price": 199,
-      "image": "/infiniteObject.png",
-      "quantity": 1
-  },
-  {
-      "id": 3,
-      "name": "Extra Large",
-      "price": 299,
+      "name": "White",
+      "price": 129,
       "image": "/infiniteObject.png",
       "quantity": 1
   }

@@ -36,8 +36,13 @@ export default function NFTDetailView(props) {
     const externalURL = metadata.externalURL;
     const imageSrc = getImageSrcFromMetadataViewsFile(display.thumbnail);
     return (
-      <div className="w-full pb-4 pt-2 px-2 flex gap-x-5">
-        <div className="w-96 shrink-0 shadow-md aspect-square flex justify-center rounded-2xl bg-white relative overflow-hidden ring-1 ring-black ring-opacity-5">
+      <div className="w-full pb-4 pt-2 px-2 flex justify-center gap-x-5">
+        <div
+          className="m-auto w-96 shrink-0 shadow-md aspect-square flex 
+          justify-center rounded-2xl bg-white relative overflow-hidden ring-1 
+        ring-black ring-opacity-5"
+          id="metaVideo"
+        >
           <video autoPlay loop>
             <source src={metadata.medias.items[1].file.url} />
           </video>
