@@ -11,10 +11,13 @@ import { useRecoilState } from "recoil";
 import {
   showBasicNotificationState,
   basicNotificationContentState,
+  cartState,
 } from "../lib/atoms.js";
 import { LogoutIcon, ShoppingCartIcon } from "@heroicons/react/outline";
 
 export default function NavigationBar() {
+  const [cartItem] = useRecoilState(cartState);
+
   const [, setShowBasicNotification] = useRecoilState(
     showBasicNotificationState
   );
@@ -129,7 +132,7 @@ export default function NavigationBar() {
           <div>
             <ShoppingCartIcon />
             <span className="absolute -top-2 -right-2 text-[13px] bg-red-600 h-[18px] w-[18px] rounded-full grid place-items-center text-white">
-              0
+              {cartItem.length}
             </span>
           </div>
         </Link>

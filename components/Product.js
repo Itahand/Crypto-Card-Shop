@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { cartState } from "../atoms/cartState";
+import { cartState } from "../lib/atoms";
 import toast from "react-hot-toast";
 
 const Product = ({ product }) => {
