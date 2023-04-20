@@ -138,7 +138,7 @@ export default function Layout({ children }) {
             </div>
           </div>
         ) : null}
-        <div className="mt-10 flex flex-row gap-x-2 sm:gap-x-4 items-start justify-start">
+        <div className="flex flex-row gap-x-2 sm:gap-x-4 items-start justify-start">
           <Sidebar />
           {children}
         </div>
