@@ -16,6 +16,9 @@ export default function NFTView(props) {
   const [metadataError, setMetadataError] = useState(null);
   const [metadata, setMetadata] = useState(null);
 
+  const nameWords = display.name.split(" ");
+  const playerName = nameWords[0] + " " + nameWords[1];
+
   useEffect(() => {
     if (account && isValidFlowAddress(account)) {
       getNftMetadataViews(account, "MomentCollection", display.tokenID)
@@ -45,7 +48,7 @@ export default function NFTView(props) {
     return (
       <>
         <label className="px-3 max-h-12 break-words overflow-hidden text-ellipsis font-flow font-semibold text-xs text-black">
-          {`${metadata.traits.traits[17].value} Full Name`}
+          {playerName}
         </label>
 
         <label className="px-3 font-flow font-medium text-xs text-gray-400">

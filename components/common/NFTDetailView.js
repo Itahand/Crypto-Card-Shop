@@ -14,6 +14,7 @@ import data from "../../data.json";
 export default function NFTDetailView(props) {
   const router = useRouter();
   const { collection: collectionPath, token_id: tokenID } = router.query;
+  console.log(tokenID);
   const [, setShowBasicNotification] = useRecoilState(
     showBasicNotificationState
   );

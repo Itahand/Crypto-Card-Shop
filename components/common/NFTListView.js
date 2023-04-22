@@ -18,7 +18,6 @@ export default function NFTListView(props) {
   const [displayData, setDisplayData] = useState(null);
   const [displays, setDisplays] = useState(null);
   const limit = 20;
-
   const [metadataError, setMetadataError] = useState(null);
   const [metadata, setMetadata] = useState(null);
 
