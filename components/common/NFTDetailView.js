@@ -14,7 +14,6 @@ import data from "../../data.json";
 export default function NFTDetailView(props) {
   const router = useRouter();
   const { collection: collectionPath, token_id: tokenID } = router.query;
-  console.log(tokenID);
   const [, setShowBasicNotification] = useRecoilState(
     showBasicNotificationState
   );
@@ -23,6 +22,9 @@ export default function NFTDetailView(props) {
   );
 
   const { metadata } = props;
+  const nameWords = metadata.display.name.split(" ");
+  const playerName = nameWords[0] + " " + nameWords[1];
+  console.log(playerName);
 
   const getDisplayView = (metadata) => {
     const display = metadata.display;
@@ -57,7 +59,7 @@ export default function NFTDetailView(props) {
             ) : null}
             <div className="w-full flex gap-x-3 justify-between items-center">
               <label className="font-bold text-black text-3xl">
-                {display.name} Player full name
+                {playerName}
               </label>
             </div>
             <div className="flex gap-x-1">
