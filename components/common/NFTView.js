@@ -15,6 +15,7 @@ export default function NFTView(props) {
 
   const [metadataError, setMetadataError] = useState(null);
   const [metadata, setMetadata] = useState(null);
+  console.log(metadata);
 
   const nameWords = display.name.split(" ");
   const playerName = nameWords[0] + " " + nameWords[1];
@@ -52,10 +53,13 @@ export default function NFTView(props) {
         </label>
 
         <label className="px-3 font-flow font-medium text-xs text-gray-400">
-          {`${metadata.traits.traits[10].value} Play Type`}
+          {`Play Type: ${metadata.traits.traits[10].value}`}
         </label>
         <label className="px-3 font-flow font-medium text-xs text-gray-400">
-          {`${metadata.traits.traits[23].value} Set Name`}
+          {`${metadata.editions.infoList[0].name}`}
+        </label>
+        <label className="px-3 font-flow font-medium text-xs text-gray-400">
+          {`Serial: #${metadata.editions.infoList[0].number}`}
         </label>
       </>
     );
