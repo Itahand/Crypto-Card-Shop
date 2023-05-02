@@ -15,10 +15,17 @@ export default function NFTView(props) {
 
   const [metadataError, setMetadataError] = useState(null);
   const [metadata, setMetadata] = useState(null);
+  const [playerName, setPlayerName] = useState(null);
+  const [playType, setPlayType] = useState(null);
   console.log(metadata);
-
-  const nameWords = display.name.split(" ");
-  const playerName = nameWords[0] + " " + nameWords[1];
+  useEffect(() => {
+    let nameWords = display.name.split(" ");
+    setPlayerName(nameWords[0] + " " + nameWords[1]);
+    setPlayType(nameWords[2]);
+  }, [display]);
+  //  const playerName = nameWords[0] + " " + nameWords[1];
+  // const playType = nameWords[2];
+  //  console.log(metadata);
 
   useEffect(() => {
     if (account && isValidFlowAddress(account)) {
@@ -46,14 +53,31 @@ export default function NFTView(props) {
   const getTraitsView = (metadata) => {
     const traits = metadata.traits && metadata.traits.traits;
     if (!traits || traits.length == 0) return null;
+    if (playerName === " Redemption") {
+      return (
+        <>
+          <label className="px-3 max-h-12 break-words overflow-hidden text-ellipsis font-flow font-semibold text-xs text-black">
+            {playerName}
+          </label>
+          <label className="px-3 font-flow font-medium text-xs text-gray-400">
+            {`Team: ${metadata.traits.traits[2].value}`}
+          </label>
+          <label className="px-3 font-flow font-medium text-xs text-gray-400">
+            {`Set Name: ${metadata.traits.traits[5].value}`}
+          </label>
+          <label className="px-3 font-flow font-medium text-xs text-gray-400">
+            {`Serial: #${metadata.serial.number}`}
+          </label>
+        </>
+      );
+    }
     return (
       <>
         <label className="px-3 max-h-12 break-words overflow-hidden text-ellipsis font-flow font-semibold text-xs text-black">
           {playerName}
         </label>
-
         <label className="px-3 font-flow font-medium text-xs text-gray-400">
-          {`Play Type: ${metadata.traits.traits[10].value}`}
+          {`Play Type: ${playType}`}
         </label>
         <label className="px-3 font-flow font-medium text-xs text-gray-400">
           {`${metadata.editions.infoList[0].name}`}
